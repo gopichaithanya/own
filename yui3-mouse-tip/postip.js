@@ -111,6 +111,7 @@ YUI.add('Postip',function(Y){
 				that.show();
 			});
 			
+			/*
 			Y.one('body').on(that.eventOut,function(e){
 				var el = e.target;
 				//debugger;
@@ -123,6 +124,27 @@ YUI.add('Postip',function(Y){
 					}		
 				}	
 				
+			});
+			*/
+
+			that.con.on('mouseout',function(e){
+				e.halt();
+				that.isShow = false;
+				setTimeout(function(){
+					if(that.isShow == false)that.hide();
+				},300)
+			});
+			that.oTip.on('mouseover',function(e){
+				e.halt();
+				that.isShow = true;
+				that.show();
+			});
+			that.oTip.on('mouseout',function(e){
+				e.halt();
+				that.isShow = false;
+				setTimeout(function(){
+					if(that.isShow == false)that.hide();
+				},200)
 			});
 			
 			
