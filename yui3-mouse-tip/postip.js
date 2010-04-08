@@ -110,7 +110,7 @@ YUI.add('Postip',function(Y){
 				that.isShow = true;
 				that.show();
 			});
-			
+			/*
 			Y.one('body').on(that.eventOut,function(e){
 				var el = e.target;
 				//console.log(e.currentTarget.inViewportRegion(that.con,false));
@@ -124,9 +124,13 @@ YUI.add('Postip',function(Y){
 					}
 				}
 			});
+			*/
 
 			that.con.on('mouseout',function(){
-				if (isShow = true){
+				if(el.inRegion(that.oTip,true)){
+						that.isShow = true;
+				}else{
+					that.isShow = false;
 					that.hide();
 				}
 			})
