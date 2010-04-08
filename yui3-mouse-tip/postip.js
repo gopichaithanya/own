@@ -128,19 +128,22 @@ YUI.add('Postip',function(Y){
 
 			that.con.on('mouseout',function(e){
 				var el = e.target;
+				console.log(el);
 				if(el.inRegion(that.oTip,true)){
 						that.isShow = true;
 				}else{
 					that.isShow = false;
 					that.hide();
 				}
-			})
+			});
+			/*
 			//窗口改变时
 			window.onresize = function(){
 				if (that.isShow){
 					that.posTip(that.con);	
 				}	
 			};
+			*/
 			return this;
 			
 		},
