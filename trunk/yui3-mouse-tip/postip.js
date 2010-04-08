@@ -131,6 +131,7 @@ YUI.add('Postip',function(Y){
 				console.log(el);
 				if(el.inRegion(that.oTip,true)){
 						that.isShow = true;
+						that.show();
 				}else{
 					that.isShow = false;
 					that.hide();
