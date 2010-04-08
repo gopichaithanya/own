@@ -8,36 +8,25 @@ YUI.add('Postip',function(Y){
 			var that = this;
 			that.id = id;
 			that.config = config;
-			//设置相对框
-			//that.con = that.id;
-			//debugger;
 			that.con = (typeof that.id == 'object') ? that.id : Y.one('#'+that.id);
 			//that.con = Y.one('#'+that.id);
 			that.isShow = false;
-			//接受参数
-			//that.buildParam(that.config);
 			//渲染弹出框
 			that.render();
+			//构造弹出框
+			that.buildTip();
 			//绑定事件
 			that.bindEvent();
-
 			return this;
 		},
-		buildTip:function(o){
+		buildTip:function(){
 			var that = this;
 			//设置弹出框
 			if(that.oTip)return;
-
-			if(typeof that.oTip == 'undefined' || that.oTip  == null){
-				//if(Y.one('#posTip'))return;
-				//console.log(o.content+'-----------------'+o);
-				that.content = o.content;
-				var tip = Y.Node.create('<div class="'+that.oTipclass+'" style="visibility:hidden;position:absolute;z-index:1000;top:0">'+that.content+'</div>');
-				Y.one('body').appendChild(tip);
-				that.oTip = tip;
-			}else if(typeof that.oTip == 'object'){
-				that.oTip = that.oTip;
-			}
+			var tip = Y.Node.create('<div class="'+that.oTipclass+'" style="visibility:hidden;position:absolute;z-index:1000;top:0">'+that.content+'</div>');
+			Y.one('body').appendChild(tip);
+			that.oTip = tip;
+			if(typeof that.oTip == 'object')that.oTip = that.oTip;
 			return this;
 		},
 		buildParam:function(o){
@@ -47,7 +36,6 @@ YUI.add('Postip',function(Y){
 
 			//鼠标事件类型
 			that.eventype = (typeof o.eventype=='undifined' || o.eventype==null)?'mouseover':o.eventype;
-
 			//设置Tip对齐方式
 			that.pos = (typeof o.pos == 'undefined' || o.pos == null)?{}:o;
 			if(o.pos){
@@ -55,28 +43,23 @@ YUI.add('Postip',function(Y){
 				that.pos.hAlign = (typeof o.pos.h=='undifined' || o.pos.h==null)?'left':o.pos.h;
 				that.pos.vAlign = (typeof o.pos.v=='undifined' || o.pos.v==null)?'bottom':o.pos.v;
 			}
-	
 			that.oTipclass = (typeof o.classname=='undifined' || o.classname==null)?'postip':o.classname;
 
 			//动画参数
 			that.delayTime = (typeof o.delay=='undifined' || o.delay==null)?'350':o.delay;
 			that.animType = (typeof o.anim=='undifined' || o.anim==null)?'no':o.anim;
 			that.animSpeed = (typeof o.speed=='undifined' || o.speed==null)?'0.2':o.speed;
-
 			that.content = o.content;
-
-			that.buildTip(o);
-			//如果是点击事件鼠标变成手势
-			if(that.eventype == 'click'){
-				that.con.setStyle('cursor','pointer');
-			}
 			return this;
-			
 		},
 		//渲染HTML生成或找到弹出框
 		render:function(o){
 			var that = this;
 			that.parseParam(o);
+			//如果是点击事件鼠标变成手势
+			if(that.eventype == 'click'){
+				that.con.setStyle('cursor','pointer');
+			}
 			return this;
 			
 		},
@@ -109,23 +92,6 @@ YUI.add('Postip',function(Y){
 				that.isShow = true;
 				that.show();
 			});
-			
-			/*
-			Y.one('body').on(that.eventOut,function(e){
-				var el = e.target;
-				//debugger;
-				if(!el.inViewportRegion(that.con,false)){
-					if(el.inRegion(that.oTip,true)){
-						that.isShow = true;
-					}else{
-						that.isShow = false;
-						that.hide();
-					}		
-				}	
-				
-			});
-			*/
-
 			that.con.on('mouseout',function(e){
 				e.halt();
 				that.isShow = false;
@@ -145,19 +111,7 @@ YUI.add('Postip',function(Y){
 					if(that.isShow == false)that.hide();
 				},200)
 			});
-			
-			
-			
-			
-			
-			/*
-			//窗口改变时
-			window.onresize = function(){
-				if (that.isShow){
-					that.posTip(that.con);	
-				}	
-			};
-			*/
+
 			return this;
 			
 		},
@@ -270,7 +224,7 @@ YUI.add('Postip',function(Y){
 			if(that.oTip.getStyle('visibility') == 'visible'){								 
 				if (that.animType == 'no'){
 					that.oTip.setStyle('visibility','hidden');	
-				}else if(that.animType == 'fade'||that.animType == 'expand'){
+				}else {
 					var anim2 = new Y.Anim({
 						node:that.oTip,
 						to:{
@@ -278,37 +232,15 @@ YUI.add('Postip',function(Y){
 						},
 						duration:that.animSpeed
 					});
-					anim2.run();
 					anim2.on('end',function(){
 						that.oTip.setStyles({
 							'visibility':'hidden',
 							'opacity':'1'
 						});		
 					});
+					anim2.run();
 				}
 				
-				/*else if(that.animType == 'expand'){
-					var __width = that.oTip._node.clientWidth,
-						__height = that.oTip._node.clientHeight;
-					debugger;
-					var animExpand2 = new Y.Anim({
-						node:that.oTip,
-						to:{
-							width:0,
-							height:0
-						},
-						duration:that.animSpeed
-					});
-					animExpand2.run();
-					animExpand2.on('end',function(){
-						alert();
-						that.oTip.setStyles({
-							'width':__width,
-							'height':__height,
-							'visibility':'hidden'
-						});		
-					});
-				}*/
 			};
 			return this;
 			
