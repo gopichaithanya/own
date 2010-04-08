@@ -47,7 +47,6 @@ YUI.add('Postip',function(Y){
 
 			//鼠标事件类型
 			that.eventype = (typeof o.eventype=='undifined' || o.eventype==null)?'mouseover':o.eventype;
-			that.eventOut = (typeof o.eventout=='undifined' || o.eventout==null)?'mouseover':o.eventout;
 
 			//设置Tip对齐方式
 			that.pos = (typeof o.pos == 'undefined' || o.pos == null)?{}:o;
