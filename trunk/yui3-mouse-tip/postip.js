@@ -81,7 +81,6 @@ YUI.add('Postip',function(Y){
 		bindEvent:function(){
 			var that = this;
 			that.con.on(that.eventype,function(e){
-				//debugger;
 				var el = e.target;
 				that.posTip(el);
 				if(typeof that.content == 'undefined' || that.content  == null){
@@ -121,7 +120,6 @@ YUI.add('Postip',function(Y){
 			var _left,_top;	  
 			_left = that.getLeft(that.pos.hAlign,o,that.oTip);
 			_top = that.getTop(that.pos.vAlign,o,that.oTip);						
-			//console.log(_left+'=========='+_top);
 			that.oTip.setStyles({
 				'left':_left+'px',
 				'top':_top+'px'
