@@ -47,7 +47,7 @@ YUI.add('Postip',function(Y){
 
 			//鼠标事件类型
 			that.eventype = (typeof o.eventype=='undifined' || o.eventype==null)?'mouseover':o.eventype;
-			that.eventOut = (typeof o.eventout=='undifined' || o.eventout==null)?'click':o.eventout;
+			that.eventOut = (typeof o.eventout=='undifined' || o.eventout==null)?'mouseover':o.eventout;
 
 			//设置Tip对齐方式
 			that.pos = (typeof o.pos == 'undefined' || o.pos == null)?{}:o;
@@ -110,33 +110,25 @@ YUI.add('Postip',function(Y){
 				that.isShow = true;
 				that.show();
 			});
-			/*
+			
 			Y.one('body').on(that.eventOut,function(e){
 				var el = e.target;
-				//console.log(e.currentTarget.inViewportRegion(that.con,false));
-				if(!el.inViewportRegion(that.con,false)){
 				//debugger;
+				if(!el.inViewportRegion(that.con,false)){
 					if(el.inRegion(that.oTip,true)){
 						that.isShow = true;
 					}else{
 						that.isShow = false;
 						that.hide();
-					}
-				}
+					}		
+				}	
+				
 			});
-			*/
-
-			that.con.on('mouseout',function(e){
-				var el = e.target;
-				console.log(el);
-				if(el.inRegion(that.oTip,true)){
-						that.isShow = true;
-						that.show();
-				}else{
-					that.isShow = false;
-					that.hide();
-				}
-			});
+			
+			
+			
+			
+			
 			/*
 			//窗口改变时
 			window.onresize = function(){
