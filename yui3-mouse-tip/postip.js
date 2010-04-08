@@ -126,7 +126,8 @@ YUI.add('Postip',function(Y){
 			});
 			*/
 
-			that.con.on('mouseout',function(){
+			that.con.on('mouseout',function(e){
+				var el = e.target;
 				if(el.inRegion(that.oTip,true)){
 						that.isShow = true;
 				}else{
