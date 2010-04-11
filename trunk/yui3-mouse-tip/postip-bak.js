@@ -21,23 +21,12 @@ YUI.add('Postip',function(Y){
 		},
 		buildTip:function(){
 			var that = this;
+			//设置弹出框
 			if(that.oTip)return;
-			if(typeof that.Tip == 'undifined' || that.Tip == null){
-				var tip = Y.Node.create('<div class="J-tip" style="visibility:hidden;position:absolute;z-index:1000;top:0"><div class="J-tipbox '+that.oTipclass+'">'+that.content+'</div></div>');
-				Y.one('body').appendChild(tip);
-				that.oTip = tip;
-			}else if(typeof that.Tip == 'object'){
-				that.oTip = that.Tip;
-			}
-			//IE6以下隐藏干扰层
-			if(/6/i.test(Y.UA.ie)){
-				that.mark = Y.Node.create('<iframe frameborder="0" src="javascript:false" style="background:transparent;position:absolute;border:none;top:0;left:0;padding:0;margin:0;z-index:-1;filter:alpha(opacity=0);"></iframe>');
-				that.mark.setStyles({
-					'width':that.oTip.get('region').width,
-					'height':that.oTip.get('region').height
-				});
-				that.oTip.appendChild(that.mark);
-			}
+			var tip = Y.Node.create('<div class="'+that.oTipclass+'" style="visibility:hidden;position:absolute;z-index:1000;top:0">'+that.content+'</div>');
+			Y.one('body').appendChild(tip);
+			that.oTip = tip;
+			if(typeof that.oTip == 'object')that.oTip = that.oTip;
 			return this;
 		},
 		buildParam:function(o){
@@ -47,7 +36,6 @@ YUI.add('Postip',function(Y){
 
 			//鼠标事件类型
 			that.eventype = (typeof o.eventype=='undifined' || o.eventype==null)?'mouseover':o.eventype;
-			that.mouseout = (typeof o.mouseout=='undifined' || o.mouseout==null)?true:false;
 			//设置Tip对齐方式
 			that.pos = (typeof o.pos == 'undefined' || o.pos == null)?{}:o;
 			if(o.pos){
@@ -57,8 +45,13 @@ YUI.add('Postip',function(Y){
 			}
 			that.oTipclass = (typeof o.classname=='undifined' || o.classname==null)?'postip':o.classname;
 
+			//动画参数
+			/*
+			that.delayTime = (typeof o.delay=='undifined' || o.delay==null)?'350':o.delay;
+			that.animType = (typeof o.anim=='undifined' || o.anim==null)?'no':o.anim;
+			that.animSpeed = (typeof o.speed=='undifined' || o.speed==null)?'0.2':o.speed;
+			*/
 			that.content = o.content;
-			that.Tip = o.otip;
 			return this;
 		},
 		//渲染HTML生成或找到弹出框
@@ -70,6 +63,7 @@ YUI.add('Postip',function(Y){
 				that.con.setStyle('cursor','pointer');
 			}
 			return this;
+			
 		},
 		/**
 		* 过滤参数列表
@@ -87,42 +81,40 @@ YUI.add('Postip',function(Y){
 		}, 
 		//注册事件
 		bindEvent:function(){
-			var that = this; 
+			var that = this;
 			that.con.on(that.eventype,function(e){
 				var el = e.target;
 				that.posTip(el);
 				if(typeof that.content == 'undefined' || that.content  == null){
-						//debugger;
-					if(el.getAttribute('rel')){
-						that.oTip.one('.J-tipbox').set('innerHTML',el.getAttribute('rel'));
+					if(el.get('rel')){
+						that.oTip.set('innerHTML',el.get('rel'));
 					}
 				}
 				that.isShow = true;
 				if(that.isShow == true)that.show();
+			});
+			that.con.on('mouseout',function(e){
+				e.halt();
+				that.isShow = false;
+				setTimeout(function(){
+					if(that.isShow == false)that.hide();
+				},300)
 			});
 			that.oTip.on('mouseover',function(e){
 				e.halt();
 				that.isShow = true;
 				that.show();
 			});
-			if(that.mouseout){
-				that.con.on('mouseout',function(e){
+			that.oTip.on('mouseout',function(e){
 				e.halt();
 				that.isShow = false;
 				setTimeout(function(){
 					if(that.isShow == false)that.hide();
-				},300)
-				});
-				that.oTip.on('mouseout',function(e){
-					e.halt();
-					that.isShow = false;
-					setTimeout(function(){
-						if(that.isShow == false)that.hide();
-					},200)
-				});
-			}
-			
+				},200)
+			});
+
 			return this;
+			
 		},
 		//定位Tip
 		posTip:function(o){
@@ -133,9 +125,7 @@ YUI.add('Postip',function(Y){
 			that.oTip.setStyles({
 				'left':_left+'px',
 				'top':_top+'px'
-			});
-			//IE6下隐藏干扰物并定位iframe
-			
+			});	
 			return this;
 		},
 		//得到弹出框相对左边距
@@ -189,16 +179,75 @@ YUI.add('Postip',function(Y){
 		show:function(){
 			var that = this;
 			if(that.oTip.getStyle('visibility') == 'visible')return;
+			/*
+			if(that.animType == 'no'){
+				//显示
+				that.oTip.setStyle('visibility','visible');			
+			}else if(that.animType == 'fade'){
+				that.oTip.setStyles({
+					'opacity':'0',
+					'visibility':'visible'
+				});
+				var anim1 = new Y.Anim({
+					node:that.oTip,
+					to:{
+						opacity:1
+					},
+					duration:that.animSpeed
+				});
+				anim1.run();
+			}else if(that.animType == 'expand'){
+				//debugger;
+				var _width = that.oTip._node.clientWidth,
+					_height = that.oTip._node.clientHeight;
+				that.oTip.setStyles({
+					'width':'0',
+					'height':'0',
+					'overflow':'hidden',
+					'visibility':'visible'
+				});
+				var animExpand = new Y.Anim({
+					node:that.oTip,
+					to:{
+						width:_width,
+						height:_height
+					},
+					duration:that.animSpeed
+				});
+				animExpand.run();
+			}*/
 			that.oTip.setStyle('visibility','visible');
 			return this;
+		
 		},
 		//控制弹出框隐藏
 		hide:function(){
 			var that = this;
 			if(that.oTip.getStyle('visibility') == 'visible'){
+				/*
+				if (that.animType == 'no'){
+					that.oTip.setStyle('visibility','hidden');	
+				}else {
+					var anim2 = new Y.Anim({
+						node:that.oTip,
+						to:{
+							opacity:0
+						},
+						duration:that.animSpeed
+					});
+					anim2.on('end',function(){
+						that.oTip.setStyles({
+							'visibility':'hidden',
+							'opacity':'1'
+						});		
+					});
+					anim2.run();
+				} */
 				that.oTip.setStyle('visibility','hidden');	
+				
 			};
 			return this;
+			
 		}
 		
 	},0,null,4);
